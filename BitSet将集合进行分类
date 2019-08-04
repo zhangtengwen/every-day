@@ -1,0 +1,82 @@
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+public class BitMap {
+	
+	Map<Long, List<Person>> map = new HashMap<>();
+	
+	public List<Person> getRepetitiveSequence (List<Person> persons) {
+		
+		BitSet bitSet1 = new BitSet();
+		BitSet bitSet2 = new BitSet();
+		if (persons.size() == 0) {
+			return null;
+		}
+		Person per = persons.get(0);
+		bitSet2.set((int)per.getTaskId().longValue());
+		persons.remove(per);
+		
+		System.out.println("此时去掉集合第一个元素的剩余集合长度：" + persons.size());
+		for (Person person : persons) {
+			long personTaskId = person.getTaskId().longValue();
+			bitSet1.set((int)personTaskId);
+			System.out.println("每次循环的bitSet1长度：" + bitSet1.length());
+		}
+		System.out.println("每次循环的bitSet2长度："+bitSet2.length());
+		bitSet1.and(bitSet2);
+		//如果and结果为0，说明没有重复项；不为0说明有重复项
+		List<Person> persons2 = new ArrayList<>(0);
+		if (bitSet2.length() == 0) {
+			persons2.add(per);
+			map.put(per.getTaskId(), persons2);
+		} else {
+			persons2.add(per);
+			Iterator<Person> iterable = persons.iterator();
+			while(iterable.hasNext()) {
+				Person person = (Person)iterable.next();
+				if (per.getTaskId().equals(person.getTaskId())) {
+					persons2.add(person);
+					iterable.remove();
+				}
+			}
+			map.put(per.getTaskId(), persons2);
+			persons.remove(per);
+		}
+		
+		System.out.println(bitSet1.length());
+		return this.getRepetitiveSequence(persons);
+	}
+	public static void main(String[] args) {
+
+		BitMap bitMap = new BitMap();
+		List<Person> persons = new ArrayList<>();
+		for(int i = 0; i < 8 ;i++) {
+			Person person = new Person();
+			person.setId((long)i+100);
+			person.setName("张三"+i);
+			person.setTaskId((long)1000+i);
+			persons.add(person);
+		}
+		Person person = new Person();
+		person.setId((long)2+100);
+		person.setName("张三"+6);
+		person.setTaskId((long)1000+0);
+		persons.add(person);
+		
+		Person person1 = new Person();
+		person1.setId((long)3+100);
+		person1.setName("张三"+6);
+		person1.setTaskId((long)1000+0);
+		persons.add(person1);
+		System.out.println("初始化persons集合长度:"+persons.size());
+		
+		bitMap.getRepetitiveSequence(persons);
+		
+		System.out.println(bitMap.map.entrySet().toString());
+		System.out.println(bitMap.map.entrySet().size());
+	}
+}
