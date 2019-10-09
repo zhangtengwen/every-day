@@ -1,0 +1,72 @@
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+*POJO对象Test 
+*属性：Integer id;
+*     String dateString;(POJO在此就不粘贴)
+* 此代码还是存在一定的bug，目前想不出来。。。。。。
+*感兴趣的可以给我提意见。
+@author zhangtengwen
+*这个代码就想解决POJO属性过多进行赋值的问题。
+*/
+public class RelFlash {
+
+	@SuppressWarnings("rawtypes")
+	public static Object putAllParam(final Object object, final Map<String, Object> arguments) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+
+		Class clazz = object.getClass();
+		Method[] methods = clazz.getDeclaredMethods();
+		Field[] files = clazz.getDeclaredFields();
+		int i = 0;
+		for(Method method : methods) {
+			String name = (String)method.getName().toLowerCase();
+			if (name.startsWith("set")) {
+				if (i == files.length) {
+					break;
+				}
+				Object argument = null;
+				for(Field file : files) {
+					String fileName = file.getName();
+					if (name.contains("set" + fileName.toLowerCase())) {
+						argument = arguments.get(fileName);
+						break;
+					}
+				}
+				i++;
+				if (argument instanceof String) {
+					String.valueOf(argument);
+				}
+				method.invoke(object, argument);
+			}
+		}
+		return object;
+	}
+	
+	public static void main(String[] args) {
+
+  /**
+  * 组装Map可以多种方式
+  */
+		Map<String, Object> arguments = new HashMap<String, Object>(0);
+		arguments.put("id", 1100);
+		arguments.put("dateString", "2019-08-10");
+		Test test = new Test();
+
+		try {
+			test = (Test)RelFlash.putAllParam(test, arguments);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		System.out.println("id:" + test.getId());
+		System.out.println("dateString:" + test.getDateString());
+	}
+
+}
