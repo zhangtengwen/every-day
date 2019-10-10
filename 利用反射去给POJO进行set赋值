@@ -8,7 +8,7 @@ import java.util.Map;
 *POJO对象Test 
 *属性：Integer id;
 *     String dateString;(POJO在此就不粘贴)
-* 此代码还是存在一定的bug，目前想不出来。。。。。。
+* 此代码还是存在一定的bug，目前想不出来解决办法。。。。。。
 *感兴趣的可以给我提意见。
 @author zhangtengwen
 *这个代码就想解决POJO属性过多进行赋值的问题。
