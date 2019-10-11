@@ -30,18 +30,19 @@ public class RelFlash {
 				}
 				Object argument = null;
 				for(Field file : files) {
+					file.setAccessible(true);
 					String fileName = file.getName();
+					Penguin annotation = (Penguin)file.getAnnotation(Penguin.class);
 					if (name.contains("set" + fileName.toLowerCase())) {
 						argument = arguments.get(fileName);
+						Class<?> type = annotation.value();
+						argument = type.cast(argument);
 						break;
 					}
 				}
 				i++;
-				if (argument instanceof String) {
-					String.valueOf(argument);
-				}
 				method.invoke(object, argument);
-			}
+			}	
 		}
 		return object;
 	}
@@ -69,4 +70,17 @@ public class RelFlash {
 		System.out.println("dateString:" + test.getDateString());
 	}
 
+}
+
+@Documented
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Penguin {
+
+	/**
+	 * 得到该属性类型
+	 * 默认为String
+	 * @return
+	 */
+	Class<?> value() default String.class;
 }
