@@ -1,0 +1,75 @@
+
+
+public class TestBuilder {
+
+	private final int servingSize;
+	
+	private final int servings;
+	
+	private final int calorise;
+	
+	private final int fat;
+	
+	private final int sodium;
+	
+	private final int carbohydrate;
+	
+	public static class Builder {
+		private final int servingSize;
+		private final int servings;
+		
+		private int calorise = 0;
+		private int fat = 0;
+		private int sodium = 0;
+		private int carbohydrate = 0;
+		public Builder(int servingSize, int servings) {
+			this.servingSize = servingSize;
+			this.servings = servings;
+		}
+		public Builder calorise(int val) {
+			this.calorise = val;
+			return this;
+		}
+		public Builder fat(int val) {
+			this.fat = val;
+			return this;
+		}
+		public Builder sodium(int val){
+			this.sodium = val;
+			return this;
+		}
+		public Builder carbohydrate(int val) {
+			this.carbohydrate = val;
+			return this;
+		}
+		public TestBuilder build() {
+			return new TestBuilder(this);
+		}
+	}
+
+	private TestBuilder(Builder builder) {
+		servingSize = builder.servingSize;
+		servings = builder.servings;
+		
+		calorise = builder.calorise;
+		fat = builder.fat;
+		sodium = builder.sodium;
+		carbohydrate = builder.carbohydrate;
+	}
+	
+	@Override
+	public String toString() {
+		return "TestBuilder [servingSize=" + servingSize + ", servings="
+				+ servings + ", calorise=" + calorise + ", fat=" + fat
+				+ ", sodium=" + sodium + ", carbohydrate=" + carbohydrate + "]";
+	}
+
+	//测试
+	public static void main(String[] args) {
+
+		TestBuilder testBuilder = new TestBuilder.Builder(100, 50)
+					.calorise(30).fat(120).build();
+		System.out.println(testBuilder.toString());
+	}
+
+}
